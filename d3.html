@@ -38,6 +38,13 @@
 
 <div id="punchcard"></div>
 
+<div id="im">
+</div>
+
+<div id="im">
+</div>
+
+
 <script src="http://d3js.org/d3.v2.min.js"></script>
 <script>
 var Data_url = 'https://dl.dropboxusercontent.com/u/22455492/fil.csv';
@@ -152,8 +159,6 @@ d3.csv(Data_url, function(data){
       imyScale = d3.scale.linear().range([d3.select("#im").style("height"), 0]); // value -> display
       imyMap = function(d) { return imyScale(imyValue(d));}; // data -> display
 
-  console.log( data[0] )
-
 
   var imwidth = d3.select("#im").style("width");
 
@@ -166,11 +171,21 @@ d3.csv(Data_url, function(data){
 
 
 
-  var g = d3.select("#im").append("svg")
+  var image_divs = d3.selectAll("#im").append("svg").append("svg:image")
+                      .attr("xlink:href","https://farm4.staticflickr.com/3919/14466781737_a37c893a07_b.jpg")
+                      .attr("x",0)
+                      .attr("y",0)
+                      .attr("width",1000)
+                      .attr("height",1000)
+
+
+
+
+/*
               .attr("width", d3.select("#im").style("width") )
               .attr("height", d3.select("#im").style("height") )
-              .append("g")
-
+              .append("g") } )
+/*
   var im = g.append("svg:image")
               .attr("xlink:href","https://farm4.staticflickr.com/3919/14466781737_a37c893a07_b.jpg")
               .attr("x",0)
@@ -185,10 +200,7 @@ d3.csv(Data_url, function(data){
               .attr("height",imscaley(500) )
               .style("fill", "none")
               .style("stroke", "black")
-
-
-
-
+*/
 
 
 })
@@ -197,7 +209,3 @@ d3.csv(Data_url, function(data){
 
 
 </script>
-
-
-<div id="im">
-</div>

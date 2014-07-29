@@ -40,15 +40,30 @@
 
 <div id="im">
 </div>
-
 <div id="im">
 </div>
+<div id="im">
+</div>
+<div id="im">
+</div>
+
 
 
 <script src="http://d3js.org/d3.v2.min.js"></script>
 <script>
 var Data_url = 'https://dl.dropboxusercontent.com/u/22455492/fil.csv';
 
+
+var img_src = ["https://farm6.staticflickr.com/5570/14585739749_9d6a346283_z.jpg",
+                "https://farm4.staticflickr.com/3843/14769216791_1e6f623dc3_z.jpg",
+                "https://farm4.staticflickr.com/3855/14585737359_9c3c7374a4_z.jpg",
+                "https://farm4.staticflickr.com/3852/14585744718_11e3e9ee11_z.jpg"];
+// Flickr "Medium 640" image size
+
+var im_sz = [ 640, 478];
+
+
+var oim_sz = [1392,1040];
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
 width = 960 - margin.left - margin.right,
@@ -163,43 +178,42 @@ d3.csv(Data_url, function(data){
   var imwidth = d3.select("#im").style("width");
 
   var imscalex = d3.scale.linear()
-                        .domain( [0, 1500] )
-                        .range( [0, 1000] );
+                        .range( [0, im_sz[0]] )
+                        .domain( [0, oim_sz[0]] );
       imscaley = d3.scale.linear()
-                            .domain( [0, 1500] )
-                            .range( [0, 1000] );
+                            .range( [0, im_sz[1] ] )
+                            .domain( [0, oim_sz[1] ] );
 
 
 
-  var image_divs = d3.selectAll("#im").append("svg").append("svg:image")
-                      .attr("xlink:href","https://farm4.staticflickr.com/3919/14466781737_a37c893a07_b.jpg")
-                      .attr("x",0)
-                      .attr("y",0)
-                      .attr("width",1000)
-                      .attr("height",1000)
+  g = d3.selectAll("#im").append("svg").append("g")
 
+  g.append("svg:image")
+      .attr("xlink:href",img_src[2])
+      .attr("x",0)
+      .attr("y",0)
+      .attr("width",im_sz[0])
+      .attr("height",im_sz[1])
 
+  d3.selectAll("#im svg g image").each( function( d,i ){
+      d3.select(this).attr("xlink:href",img_src[i])
+  })
 
-
-/*
-              .attr("width", d3.select("#im").style("width") )
-              .attr("height", d3.select("#im").style("height") )
-              .append("g") } )
-/*
-  var im = g.append("svg:image")
-              .attr("xlink:href","https://farm4.staticflickr.com/3919/14466781737_a37c893a07_b.jpg")
-              .attr("x",0)
-              .attr("y",0)
-              .attr("width",1000)
-              .attr("height",1000)
-
-  var bx = g.append("rect")
-              .attr( "x", 10 )
-              .attr( "y", 10 )
-              .attr("width", imscalex(500) )
-              .attr("height",imscaley(500) )
+  g.append("rect")
+              .attr( "x", imscalex(10) )
+              .attr( "y", imscaley(10) )
+              .attr("width", imscalex(200) )
+              .attr("height",imscaley(200) )
               .style("fill", "none")
               .style("stroke", "black")
+              /*
+                var im = g.append("svg:image")
+                            .attr("xlink:href","https://farm4.staticflickr.com/3919/14466781737_a37c893a07_b.jpg")
+                            .attr("x",0)
+                            .attr("y",0)
+                            .attr("width",1000)
+                            .attr("height",1000)
+
 */
 
 

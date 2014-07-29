@@ -77,7 +77,7 @@ imwidth = scaleimages(im_sz[0])
 
 var canvas = d3.select("#punchcard").append("svg")
 .attr("width",window.innerWidth )
-.attr("height",im_sz[1]*2+im_pad )
+.attr("height",scaleimages(im_sz[1])*2+im_pad )
 
 gim = canvas.append("g")
 .attr("id","imgblock")

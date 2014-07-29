@@ -66,8 +66,8 @@ var im_sz = [ 640, 478];
 var oim_sz = [1392,1040];
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
-width = 960 - margin.left - margin.right,
-height = 500 - margin.top - margin.bottom;
+width = 500 - margin.left - margin.right,
+height = 300 - margin.top - margin.bottom;
 
 /*
 * value accessor - returns the value to encode for a given data object.
@@ -84,7 +84,7 @@ xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 
 // setup y
 var yValue = function(d) { return d["Y"];}, // data -> value
-yScale = d3.scale.linear().range([height, 0]), // value -> display
+yScale = d3.scale.linear().range([0,height]), // value -> display
 yMap = function(d) { return yScale(yValue(d));}, // data -> display
 yAxis = d3.svg.axis().scale(yScale).orient("left");
 
@@ -158,20 +158,23 @@ d3.csv(Data_url, function(data){
           tooltip.html(d['ImId'])
                .style("left", (d3.event.pageX + 5) + "px")
                .style("top", (d3.event.pageY - 28) + "px");
+          console.log( d["ImId"] )
+          showrect( d["ImId"]-1,d["wX"], d["wY"], 200 );
       })
   .on("mouseout", function(d) {
       tooltip.transition()
            .duration(500)
            .style("opacity", 0);
+      remrect( d["ImId"]-1,d["wX"], d["wY"], 200 );
   });
 
   var imxValue = function(d) { return data[0]["wX"];}; // data -> value
-      imxScale = d3.scale.linear().range([0, d3.select("#im").style("width")]); // value -> display
+      imxScale = d3.scale.linear().range([0, oim_sz[0]]); // value -> display
       imxMap = function(d) { return imxScale(imxValue(d));}; // data -> display
 
   // setup y
   var imyValue = function(d) { return data[0]["wY"];}; // data -> value
-      imyScale = d3.scale.linear().range([d3.select("#im").style("height"), 0]); // value -> display
+      imyScale = d3.scale.linear().range([oim_sz[1], 0]); // value -> display
       imyMap = function(d) { return imyScale(imyValue(d));}; // data -> display
 
 
@@ -195,17 +198,11 @@ d3.csv(Data_url, function(data){
       .attr("width",im_sz[0])
       .attr("height",im_sz[1])
 
+
   d3.selectAll("#im svg g image").each( function( d,i ){
       d3.select(this).attr("xlink:href",img_src[i])
   })
 
-  g.append("rect")
-              .attr( "x", imscalex(10) )
-              .attr( "y", imscaley(10) )
-              .attr("width", imscalex(200) )
-              .attr("height",imscaley(200) )
-              .style("fill", "none")
-              .style("stroke", "black")
               /*
                 var im = g.append("svg:image")
                             .attr("xlink:href","https://farm4.staticflickr.com/3919/14466781737_a37c893a07_b.jpg")
@@ -215,6 +212,21 @@ d3.csv(Data_url, function(data){
                             .attr("height",1000)
 
 */
+
+var showrect = function( i,x,y,w ){
+          d3.select(g[0][i]).append("rect")
+            .attr( "x", imscalex(y) )
+            .attr( "y", imscaley(x) )
+            .attr("width", imscalex(w) )
+            .attr("height",imscaley(w) )
+            .style("fill", "none")
+            .style("stroke", "black") }
+
+var remrect = function( i,x,y,w ){
+          d3.select(g[0][i]).select("rect")
+            .remove()
+            }
+
 
 
 })

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<style>
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #eee;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font-family: helvetica;
+  font-size: 6px;
+}
+
+.loading {
+  font-family: sans-serif;
+  font-size: 15px;
+}
+
+.circle {
+  fill: #222;
+}
+
+.dot {
+  stroke: #000;
+}
+
+.tooltip {
+  position: absolute;
+  width: 150px;
+  height: 28px;
+  pointer-events: none;
+}
+
+image {
+  display: block;
+}
+</style>
+</style>
+
+
+
+<div id="punchcard"></div>
+<div id="pca"></div>
+
+
+
+<script src="http://d3js.org/d3.v2.min.js"></script>
+<script>
+
+//micrograph images on the webpage
+var img_src = ["https://farm6.staticflickr.com/5570/14585739749_9d6a346283_z.jpg",
+"https://farm4.staticflickr.com/3843/14769216791_1e6f623dc3_z.jpg",
+"https://farm4.staticflickr.com/3855/14585737359_9c3c7374a4_z.jpg",
+"https://farm4.staticflickr.com/3852/14585744718_11e3e9ee11_z.jpg"];
+
+var im_sz = [ 640, 478];
+var im_pad = 10;
+
+scaleimages = d3.scale.linear().range([0,window.innerHeight])
+.domain([0,im_sz[1]*2+im_pad ])
+
+var canvas = d3.select("#punchcard").append("svg")
+.attr("width",window.innerWidth )
+.attr("height",im_sz[1]*2+im_pad )
+
+gim = canvas.append("g")
+.attr("id","imgblock")
+.attr("width", scaleimages(im_sz[0]*2+im_pad) )
+
+img_src.forEach( function(d,i){
+  gim.append("image")
+  .attr( "xlink:href",d)
+  .attr("x", scaleimages( ( (i % 2)  ) * ( im_sz[0] + im_pad ) ) )
+  .attr("y", scaleimages( ( Math.floor(i / 2 )) * im_sz[1] + ( Math.floor(i / 2 ) > 0)*im_pad) )
+  .attr("width",scaleimages( im_sz[0] ) )
+  .attr("height",scaleimages( im_sz[1] ) )
+})
+
+
+pcag = canvas.append("g")
+.attr("width", 150)
+.attr("height", 150).append("g")
+.attr("transform","translate(375,10)")
+
+
+// Add PCA plot
+var data_loc = 'https://dl.dropboxusercontent.com/u/22455492/fil.csv';
+var pcaw = 150// window.innerWidth - d3.selec
+
+var colorlim = d3.scale.category10();
+d3.csv( data_loc, function(d){
+
+
+  xlim = d3.scale.linear()
+  .domain([d3.min(d, function(d){return parseFloat(d["X"]);}) ,
+            d3.max(d, function(d){return parseFloat(d["X"]);})])
+  .range([0,150]);
+
+
+  ylim = d3.scale.linear()
+  .domain([d3.min(d, function(d){
+    return parseFloat(d["Y"]);
+  }) ,
+  d3.max(d, function(d){
+    return parseFloat(d["Y"]);
+  })])
+  .range([0,150])
+
+
+  pcag.append("g")
+  .attr("class","x axis")
+  .attr("transform", "translate(0," + ylim(0) + ")")
+  .call( d3.svg.axis().scale(xlim).orient("bottom") )
+
+  pcag.append("g")
+  .attr("class","y axis")
+  .attr("transform","translate(150,0)")
+  .call( d3.svg.axis().scale(ylim).orient("right") )
+
+
+  pcag.selectAll(".dot")
+  .data(d)
+  .enter().append("circle")
+  .attr("class", "dot")
+  .attr("r", 6)
+  .attr("cx", function(d,i){
+    return xlim( d['X'] );
+  })
+  .attr("cy", function(d,i){
+    return ylim(d['Y']);
+  })
+  .style("fill", function(d,i){
+    return colorlim(d["ImId"]);
+  })
+  .style("opacity",.7)
+
+
+})
+</script>
+
+
+<script>
+</script>

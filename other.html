@@ -64,7 +64,7 @@ var im_sz = [ 640, 478];
 var oim_sz = [1392,1040];
 var im_pad = 10;
 
-scaleimages = d3.scale.linear().range([0,window.innerHeight])
+scaleimages = d3.scale.linear().range([0,300])
                 .domain([0,im_sz[1]*2+im_pad ])
 
 
@@ -86,9 +86,11 @@ img_src.forEach( function(d,i){
 })
 
 
+var pcaw = 150
+
 pcag = canvas.append("g")
-.attr("width", 150)
-.attr("height", 150).append("g")
+.attr("width", pcaw)
+.attr("height", pcaw).append("g")
 .attr("transform","translate(375,10)")
 
 var tooltip = d3.select("#punchcard").append("div")
@@ -99,7 +101,7 @@ var tooltip = d3.select("#punchcard").append("div")
 
 // Add PCA plot
 var data_loc = 'https://dl.dropboxusercontent.com/u/22455492/fil.csv';
-var pcaw = 150// window.innerWidth - d3.selec
+
 
 var colorlim = d3.scale.category10();
 d3.csv( data_loc, function(d){
@@ -113,7 +115,7 @@ d3.csv( data_loc, function(d){
   xlim = d3.scale.linear()
   .domain([d3.min(d, function(d){return parseFloat(d["X"]);}) ,
             d3.max(d, function(d){return parseFloat(d["X"]);})])
-  .range([0,150]);
+  .range([0,pcaw]);
 
   // Set Y-axis scale
   ylim = d3.scale.linear()
@@ -123,7 +125,7 @@ d3.csv( data_loc, function(d){
   d3.max(d, function(d){
     return parseFloat(d["Y"]);
   })])
-  .range([0,150])
+  .range([0,pcaw])
 
   // Draw PCA X-axis
   pcag.append("g")
@@ -134,7 +136,7 @@ d3.csv( data_loc, function(d){
   // Draw PCA Y-axis
   pcag.append("g")
   .attr("class","y axis")
-  .attr("transform","translate(150,0)")
+  .attr("transform","translate(pcaw,0)")
   .call( d3.svg.axis().scale(ylim).orient("right") )
 
   //Draw points

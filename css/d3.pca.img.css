@@ -1,0 +1,39 @@
+<style>
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #eee;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font-family: helvetica;
+  font-size: 6px;
+}
+
+.loading {
+  font-family: sans-serif;
+  font-size: 15px;
+}
+
+.circle {
+  fill: #222;
+}
+
+.dot {
+  stroke: #000;
+}
+
+.tooltip {
+  position: absolute;
+  width: 150px;
+  height: 28px;
+  pointer-events: none;
+}
+
+image {
+  display: block;
+}
+
+
+</style>

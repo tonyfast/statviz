@@ -23,7 +23,7 @@ csv: "https://dl.dropboxusercontent.com/u/22455492/fil.csv"
 
 
 <!-- snag liquid variables as text to pull into javascript -->
-<div id="liquidvars" style="display:none;">{{page.csv}}</div>
+<div id="liquidvars" style="display:none;">{{page | jsonify}}</div>
 
 <script src="javascript/d3.pca.img.js"></script>
 {% include disqus.html %}

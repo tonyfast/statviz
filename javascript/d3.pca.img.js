@@ -52,8 +52,8 @@ var tooltip = d3.select("#punchcard").append("div")
 
 
 // Add PCA plot
-var liquidv = $.parseJSON(d3.select("#liquidvars").text());
-var data_loc = liquidv["csv"]
+var data_loc = d3.select("#liquidvars").text();
+
 
 
 var colorlim = d3.scale.category10();

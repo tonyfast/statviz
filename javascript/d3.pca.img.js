@@ -15,7 +15,7 @@ var im_pad = 10;
 //iamge display width in pixels
 dispsz = 300;
 scaleimages = d3.scale.linear().range([0,dispsz])
-                .domain([0,im_sz[1]*2+im_pad ])
+.domain([0,im_sz[1]*2+im_pad ])
 
 imwidth = scaleimages(im_sz[0])
 
@@ -46,8 +46,8 @@ pcag = canvas.append("g")
 .attr("transform","translate("+(imwidth * 2 + 10)+",10)")
 
 var tooltip = d3.select("#punchcard").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
+.attr("class", "tooltip")
+.style("opacity", 0);
 
 
 
@@ -61,12 +61,12 @@ d3.csv( data_loc, function(d){
 
   images = d3.selectAll("#imgblock image")
   //ON MOUSE
-    scaleimagesOM = d3.scale.linear().domain([0,oim_sz[1] ])
-                  .range([0,d3.select(images[0][0]).attr("height") ])
+  scaleimagesOM = d3.scale.linear().domain([0,oim_sz[1] ])
+  .range([0,d3.select(images[0][0]).attr("height") ])
 
   xlim = d3.scale.linear()
   .domain([d3.min(d, function(d){return parseFloat(d["X"]);}) ,
-            d3.max(d, function(d){return parseFloat(d["X"]);})])
+  d3.max(d, function(d){return parseFloat(d["X"]);})])
   .range([0,pcaw]);
 
   // Set Y-axis scale
@@ -108,45 +108,43 @@ d3.csv( data_loc, function(d){
   })
   .style("opacity",.7)
   .on("mouseover", function(d) {
-          tooltip.transition()
-               .duration(200)
-               .style("opacity", .9);
-          tooltip.html(d['ImId'])
-               .style("left", (d3.event.pageX + 5) + "px")
-               .style("top", (d3.event.pageY - 28) + "px");
-          showrect( d["ImId"]-1,d["wX"], d["wY"], 200 );
-      })
+    tooltip.transition()
+    .duration(200)
+    .style("opacity", .9);
+    tooltip.html(d['ImId'])
+    .style("left", (d3.event.pageX + 5) + "px")
+    .style("top", (d3.event.pageY - 28) + "px");
+    showrect( d["ImId"]-1,d["wX"], d["wY"], 200 );
+  })
   .on("mouseout", function(d) {
-          tooltip.transition()
-               .duration(500)
-               .style("opacity", 0);
-          remrect( d["ImId"]-1,d["wX"], d["wY"], 200 );
-      });
+    tooltip.transition()
+    .duration(500)
+    .style("opacity", 0);
+    remrect( d["ImId"]-1,d["wX"], d["wY"], 200 );
+  });
 
 
 
   var showrect = function( i,x,y,w ){
 
 
-          vshift = parseFloat(d3.select(images[0][i]).attr("x"))
-          hshift = parseFloat(d3.select(images[0][i]).attr("y"))
+    vshift = parseFloat(d3.select(images[0][i]).attr("x"))
+    hshift = parseFloat(d3.select(images[0][i]).attr("y"))
 
-          console.log([x,y,hshift,vshift,scaleimages(x),scaleimages(y)])
+    d3.select("#imgblock").append("rect")
+    .attr( "x", vshift + parseFloat(scaleimagesOM(y) ))
+    .attr( "y", hshift + parseFloat(scaleimagesOM(x) ))
+    .attr("width", scaleimagesOM(w) )
+    .attr("height",scaleimagesOM(w) )
+    .style("fill", "none")
+    .style("stroke", "black") }
 
-            d3.select("#imgblock").append("rect")
-              .attr( "x", vshift + parseFloat(scaleimagesOM(y) ))
-              .attr( "y", hshift + parseFloat(scaleimagesOM(x) ))
-              .attr("width", scaleimagesOM(w) )
-              .attr("height",scaleimagesOM(w) )
-              .style("fill", "none")
-              .style("stroke", "black") }
-
-  var remrect = function( i,x,y,w ){
-                        d3.select("#imgblock").select("rect")
-                          .remove()
-                          }
+    var remrect = function( i,x,y,w ){
+      d3.select("#imgblock").select("rect")
+      .remove()
+    }
 
 
 
 
-})
+  })

@@ -1,30 +1,5 @@
 ---
-src: "https://dl.dropboxusercontent.com/u/22455492/pca-stats-w200.csv"
 ---
-{% include head.html %}
-
-<body>
-
-<div class="row">
-  <div class="col-lg-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3>PCA View</h3>
-      </div>
-      <div class="panel-body">
-        Each point on the PCA embedding corresponds to a region in a respective image.
-        Mouseover each point to find the region that corresponds to the position where the spatial statistics were sampled from.
-      </div>
-    </div>
-  </div>
-</div>
-<div id="punchcard"></div>
-<div id="pca"></div>
-
-
-<!-- snag liquid variables as text to pull into javascript -->
-<div id="liquidvars" style="display:none;">{{page["src"]}}</div>
-
-<script src="javascript/d3.pca.img.js"></script>
-{% include disqus.html %}
-</body>
+{% for post in site.posts %}
+  <a href="{{site.baseurl}}{{post.url}}">{{post.title}}</a></br>
+{% endfor %}

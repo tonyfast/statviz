@@ -38,11 +38,11 @@ img_src.forEach( function(d,i){
 })
 
 
-var pcaw = 200
+var pcaw = parseFloat(d3.select("#liquidvars1").text())
 
 pcag = canvas.append("g")
-.attr("width", pcaw)
-.attr("height", pcaw).append("g")
+.attr("width", 200)
+.attr("height", 200).append("g")
 .attr("transform","translate("+(imwidth * 2 + 10)+",10)")
 
 var tooltip = d3.select("#punchcard").append("div")
@@ -59,7 +59,7 @@ var data_loc = d3.select("#liquidvars").text();
 var colorlim = d3.scale.category10();
 d3.csv( data_loc, function(d){
 
-
+  data =d
   images = d3.selectAll("#imgblock image")
   //ON MOUSE
   scaleimagesOM = d3.scale.linear().domain([0,oim_sz[1] ])
@@ -68,7 +68,7 @@ d3.csv( data_loc, function(d){
   xlim = d3.scale.linear()
   .domain([d3.min(d, function(d){return parseFloat(d["X"]);}) ,
   d3.max(d, function(d){return parseFloat(d["X"]);})])
-  .range([0,pcaw]);
+  .range([0,200]);
 
   // Set Y-axis scale
   ylim = d3.scale.linear()
@@ -78,7 +78,7 @@ d3.csv( data_loc, function(d){
   d3.max(d, function(d){
     return parseFloat(d["Y"]);
   })])
-  .range([0,pcaw])
+  .range([0,200])
 
   // Draw PCA X-axis
   pcag.append("g")
@@ -89,7 +89,7 @@ d3.csv( data_loc, function(d){
   // Draw PCA Y-axis
   pcag.append("g")
   .attr("class","y axis")
-  .attr("transform","translate("+pcaw+",0)")
+  .attr("transform","translate("+200+",0)")
   .call( d3.svg.axis().scale(ylim).orient("right") )
 
   //Draw points
@@ -115,20 +115,20 @@ d3.csv( data_loc, function(d){
     tooltip.html(d['ImId'])
     .style("left", (d3.event.pageX + 5) + "px")
     .style("top", (d3.event.pageY - 28) + "px");
-    showrect( d["ImId"]-1,d["wX"], d["wY"], 200 );
+    showrect( d["ImId"]-1,d["wX"], d["wY"], pcaw );
   })
   .on("mouseout", function(d) {
     tooltip.transition()
     .duration(500)
     .style("opacity", 0);
-    remrect( d["ImId"]-1,d["wX"], d["wY"], 200 );
+    remrect();
   });
 
 
 
   var showrect = function( i,x,y,w ){
 
-
+    
     vshift = parseFloat(d3.select(images[0][i]).attr("x"))
     hshift = parseFloat(d3.select(images[0][i]).attr("y"))
 
@@ -140,7 +140,7 @@ d3.csv( data_loc, function(d){
     .style("fill", "none")
     .style("stroke", "black") }
 
-    var remrect = function( i,x,y,w ){
+    var remrect = function(){
       d3.select("#imgblock").select("rect")
       .remove()
     }

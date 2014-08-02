@@ -28,16 +28,6 @@ gim = canvas.append("g")
 .attr("id","imgblock")
 .attr("width", scaleimages(im_sz[0]*2+im_pad) )
 
-img_src.forEach( function(d,i){
-  gim.append("image")
-  .attr( "xlink:href",d)
-  .attr("x", scaleimages( ( (i % 2)  ) * ( im_sz[0] + im_pad ) ) )
-  .attr("y", scaleimages( ( Math.floor(i / 2 )) * im_sz[1] + ( Math.floor(i / 2 ) > 0)*im_pad) )
-  .attr("width",scaleimages( im_sz[0] ) )
-  .attr("height",scaleimages( im_sz[1] ) )
-})
-
-
 var pcaw = parseFloat(d3.select("#liquidvars1").text())
 
 pcag = canvas.append("g")
@@ -52,18 +42,32 @@ var tooltip = d3.select("#punchcard").append("div")
 
 
 // Add PCA plot
-var data_loc = d3.select("#liquidvars").text();
+data_loc = d3.select("#liquidvars").text();
 
 
 
 var colorlim = d3.scale.category10();
-d3.csv( data_loc, function(d){
+d3.json( data_loc, function(error, d){
 
-  data =d
+  console.log( error )
+  data = d;
+
+  img_src = d["images"];
+
   images = d3.selectAll("#imgblock image")
   //ON MOUSE
   scaleimagesOM = d3.scale.linear().domain([0,oim_sz[1] ])
   .range([0,d3.select(images[0][0]).attr("height") ])
+
+  img_src.forEach( function(d,i){
+    gim.append("image")
+    .attr( "xlink:href",d)
+    .attr("x", scaleimages( ( (i % 2)  ) * ( im_sz[0] + im_pad ) ) )
+    .attr("y", scaleimages( ( Math.floor(i / 2 )) * im_sz[1] + ( Math.floor(i / 2 ) > 0)*im_pad) )
+    .attr("width",scaleimages( im_sz[0] ) )
+    .attr("height",scaleimages( im_sz[1] ) )
+  })
+
 
   xlim = d3.scale.linear()
   .domain([d3.min(d, function(d){return parseFloat(d["X"]);}) ,
@@ -128,7 +132,7 @@ d3.csv( data_loc, function(d){
 
   var showrect = function( i,x,y,w ){
 
-    
+
     vshift = parseFloat(d3.select(images[0][i]).attr("x"))
     hshift = parseFloat(d3.select(images[0][i]).attr("y"))
 

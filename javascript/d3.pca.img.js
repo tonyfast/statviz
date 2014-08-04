@@ -47,41 +47,36 @@ data_loc = d3.select("#liquidvars").text();
 
 
 var colorlim = d3.scale.category10();
-d3.json( data_loc, function(error, d){
+d3.json( data_loc, function(error, data){
 
-  console.log( error )
-  data = d;
+  img_src = data["src"]["images"];
 
-  img_src = d["images"];
+
+img_src.forEach( function(data,i){
+  gim.append("image")
+  .attr( "xlink:href",data)
+  .attr("x", scaleimages( ( (i % 2)  ) * ( im_sz[0] + im_pad ) ) )
+  .attr("y", scaleimages( ( Math.floor(i / 2 )) * im_sz[1] + ( Math.floor(i / 2 ) > 0)*im_pad) )
+  .attr("width",scaleimages( im_sz[0] ) )
+  .attr("height",scaleimages( im_sz[1] ) )
+})
+
+
 
   images = d3.selectAll("#imgblock image")
   //ON MOUSE
   scaleimagesOM = d3.scale.linear().domain([0,oim_sz[1] ])
   .range([0,d3.select(images[0][0]).attr("height") ])
 
-  img_src.forEach( function(d,i){
-    gim.append("image")
-    .attr( "xlink:href",d)
-    .attr("x", scaleimages( ( (i % 2)  ) * ( im_sz[0] + im_pad ) ) )
-    .attr("y", scaleimages( ( Math.floor(i / 2 )) * im_sz[1] + ( Math.floor(i / 2 ) > 0)*im_pad) )
-    .attr("width",scaleimages( im_sz[0] ) )
-    .attr("height",scaleimages( im_sz[1] ) )
-  })
-
-
   xlim = d3.scale.linear()
-  .domain([d3.min(d, function(d){return parseFloat(d["X"]);}) ,
-  d3.max(d, function(d){return parseFloat(d["X"]);})])
-  .range([0,200]);
+  .domain([d3.min(data["src"]["data"]["X"], function(d){return parseFloat(d);}) ,
+    d3.max(data["src"]["data"]["X"], function(d){return parseFloat(d);}) ])
+  .range([0,200])
 
   // Set Y-axis scale
   ylim = d3.scale.linear()
-  .domain([d3.min(d, function(d){
-    return parseFloat(d["Y"]);
-  }) ,
-  d3.max(d, function(d){
-    return parseFloat(d["Y"]);
-  })])
+  .domain([d3.min(data["src"]["data"]["Y"], function(d){return parseFloat(d);}) ,
+    d3.max(data["src"]["data"]["Y"], function(d){return parseFloat(d);}) ])
   .range([0,200])
 
   // Draw PCA X-axis
@@ -96,30 +91,51 @@ d3.json( data_loc, function(error, d){
   .attr("transform","translate("+200+",0)")
   .call( d3.svg.axis().scale(ylim).orient("right") )
 
-  //Draw points
-  pcag.selectAll(".dot")
-  .data(d)
+  // Create tooltip function
+  function WriteTooltip( d, i ){
+      tooltip.transition()
+      .duration(200)
+      .style("opacity", .9);
+
+      tooltip.html(d["src"]["data"]['ImId'][i])
+      .style("left", (d3.event.pageX + 5) + "px")
+      .style("top", (d3.event.pageY - 28) + "px");
+      showrect( i,d["src"]["data"]["wX"][i], d["src"]["data"]["wY"][i], pcaw );
+  }
+
+/*
+v = pcag.data( data["src"]["data"]["X"],
+               function( d,i ) {
+                  console.log( data["src"]["data"]["X"][i] )} ).enter()
+*/
+
+
+pcag.selectAll(".dot").data(data["src"]["data"]["X"])
   .enter().append("circle")
   .attr("class", "dot")
   .attr("r", 6)
-  .attr("cx", function(d,i){
-    return xlim( d['X'] );
+  .attr("cx", function(c,i){
+    console.log( c )
+    console.log( i )
+    return xlim( data["src"]["data"]['X'][i] );
   })
-  .attr("cy", function(d,i){
-    return ylim(d['Y']);
+  .attr("cy", function(c,i){
+    return ylim(data["src"]["data"]['Y'][i]);
   })
-  .style("fill", function(d,i){
-    return colorlim(d["ImId"]);
+  .style("fill", function(c,i){
+    return colorlim(data["src"]["data"]["ImId"][i] );
   })
   .style("opacity",.7)
-  .on("mouseover", function(d) {
+  .on("mouseover", function(d,i) {
     tooltip.transition()
     .duration(200)
     .style("opacity", .9);
-    tooltip.html(d['ImId'])
+    tooltip.html(data["src"]["data"]['ImId'][i])
     .style("left", (d3.event.pageX + 5) + "px")
     .style("top", (d3.event.pageY - 28) + "px");
-    showrect( d["ImId"]-1,d["wX"], d["wY"], pcaw );
+    showrect( data["src"]["data"]["ImId"][i]-1,
+              data["src"]["data"]["wX"][i],
+              data["src"]["data"]["wY"][i], pcaw );
   })
   .on("mouseout", function(d) {
     tooltip.transition()
@@ -127,11 +143,52 @@ d3.json( data_loc, function(error, d){
     .style("opacity", 0);
     remrect();
   });
+/*
+  pcag.selectAll(".dot")
+  .data(d, )
 
+  //Draw points
+  pcag
+  .call( function(selection){
+
+    for ( i=0; i < d["src"]["data"]["X"].length; i++){
+
+
+    selection
+    .append("circle")
+    .attr("class", "dot")
+    .attr("r", 6)
+    .attr("cx", xlim( d["src"]["data"]['X'][i] ))
+    .attr("cy", ylim( d["src"]["data"]['Y'][i] ))
+    .style("fill",colorlim(d["src"]["data"]["ImId"][i]) )
+    .style("opacity",.7)
+    .on("mouseover", function() {
+        WriteTooltip( d,i )
+    })
+    .on("mouseout", function() {
+      tooltip.transition()
+      .duration(500)
+      .style("opacity", 0);
+      remrect();
+    });
+  }
+  })
+
+
+
+
+
+
+/*
+
+*/
 
 
   var showrect = function( i,x,y,w ){
-
+console.log( i)
+console.log( x)
+console.log( y)
+console.log( w)
 
     vshift = parseFloat(d3.select(images[0][i]).attr("x"))
     hshift = parseFloat(d3.select(images[0][i]).attr("y"))
